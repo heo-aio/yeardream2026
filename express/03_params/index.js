@@ -3,7 +3,7 @@ const app = express();
 
 //GET /rest/admin/pass
 app.get('/rest/:id/:pw',function(req,res){
-    console.log(req.params);
+    console.log(req.params); // post 에서는 이걸로 받을수 없다.
     //const id = req.params.id;
     const {id,pw} = req.params;
     res.json({
@@ -13,9 +13,16 @@ app.get('/rest/:id/:pw',function(req,res){
 });
 
 //GET /get_method?id=admin&pw=pass
+app.get('/get_method',function(req,res){
+    console.log(req.query);
+    const {id,pw} = req.query;
+    res.json({'params':{id,pw}});
+});
 
 //POST /login
 // {id:"admin",pw:"pass"}
+app.post('',function(){});
+
 
 // 위 URL 외의 것이 왔을때 처리
 
