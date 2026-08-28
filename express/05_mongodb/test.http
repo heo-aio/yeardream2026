@@ -47,7 +47,7 @@ Content-Type: application/json
 GET http://localhost/member/list
 
 ### 3. 회원 상세보기
-GET http://localhost/member/get/admin
+GET http://localhost/member/get/admin2
 
 ### 4. 회원 수정
 PUT http://localhost/member/update/zer0box
