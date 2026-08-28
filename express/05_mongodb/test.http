@@ -3,10 +3,11 @@ POST http://localhost/member/join
 Content-Type: application/json
 
 {
-  "id": "user",
+
   "pw": "user@pass",
   "name": "일반유저",
-  "phone": "010-1234-1234"
+  "phone": "010-1234-1234",
+  "grade": "admin"
 }
 
 ### 2. 회원 목록
