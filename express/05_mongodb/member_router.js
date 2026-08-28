@@ -7,12 +7,14 @@ router.post('/join',async (req,res)=>{
 
     const {id,pw,name,phone} = req.body;
     try{
-        await Member.create({id,pw,name,phone});
+        let result = await Member.create({id,pw,name,phone});
+        let object = result.toObject();
+        delete object.pw; // pw 는 결과값에서 제거하고 보여준다.
+        // object.pw = '';
+        res.json({'success':true,'data':object});
     }catch (e) {
         console.error(e,'CODE :'+e.code);
-
         let msg = "";
-
         switch (e.code){
             case 11000:
                 msg = "이미 사용중인 아이디 입니다.";
@@ -21,11 +23,9 @@ router.post('/join',async (req,res)=>{
             default:
                 msg = "필수값을 확인해 주세요";
         }
-
-
         res.json({'success':false,message:msg});
     }
-    res.json({'success':true,'data':{}});
+
 });
 
 // 회원 리스트(/member/list, /memeber/)

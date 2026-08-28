@@ -3,11 +3,44 @@ POST http://localhost/member/join
 Content-Type: application/json
 
 {
-
+  "id": "user",
   "pw": "user@pass",
   "name": "일반유저",
+  "phone": "010-1234-1234"
+}
+
+### 1. 회원 등록2
+POST http://localhost/member/join
+Content-Type: application/json
+
+{
+  "id": "admin",
+  "pw": "admin@pass",
+  "name": "관리자",
   "phone": "010-1234-1234",
   "grade": "admin"
+}
+
+### 1. 회원 등록3
+POST http://localhost/member/join
+Content-Type: application/json
+
+{
+  "id": "yeardream",
+  "pw": "year@dream",
+  "name": "김지훈",
+  "phone": "010-3344-5978"
+}
+
+### 1. 회원 등록4
+POST http://localhost/member/join
+Content-Type: application/json
+
+{
+  "id": "manager",
+  "pw": "manager@pass",
+  "name": "김지훈",
+  "phone": "010-3344-5978"
 }
 
 ### 2. 회원 목록
