@@ -50,12 +50,12 @@ GET http://localhost/member/list
 GET http://localhost/member/get/admin2
 
 ### 4. 회원 수정
-PUT http://localhost/member/update/zer0box
+PUT http://localhost/member/update/admin
 Content-Type: application/json
 
 {
-  "name": "수정된 이름",
-  "phone": "010-8989-7788"
+  "name": "관리다(수정된 이름)",
+  "grade": "admin"
 }
 
 ### 5. 회원 삭제
