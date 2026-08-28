@@ -9,11 +9,13 @@ const connectDB = require('./db');
 // 그래서 특정 IP 에 대해서 허용해 주는 기능
 app.use(cors());
 app.use(express.json()); // BODY 로 보내는 JSON 형태로 받기
+app.use('/member',require('./member_router')); // ROUTER
 
 connectDB(); // DB 접속 먼저
 
 app.all('/',(req,res)=>{
     res.send('/member 를 이용해 join, list, get, update, delete');
 });
+
 
 app.listen(80,()=>console.log('http://localhost'));
