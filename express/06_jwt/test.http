@@ -1,0 +1,10 @@
+### 1. 로그인
+POST http://localhost/login
+Content-Type: application/json
+
+{"id": "admin","pw": "pass"}
+
+### 2. 로그인 인증(토큰 인증)
+POST http://localhost/check
+Content-Type: application/json
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImFkbWluIiwicHciOiJwYXNzIiwiaWF0IjoxNzg3ODk5MzM4LCJleHAiOjE3ODc5MDExMzh9.ilDWhEqHPIJ_s-RoCHWPd267b9ibKY5OcUkCAAEKh34
