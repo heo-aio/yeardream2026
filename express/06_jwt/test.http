@@ -5,5 +5,7 @@ Content-Type: application/json
 {"id": "admin","pw": "pass"}
 
 ### 2. 로그인 인증(토큰 인증)
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImFkbWluIiwicHciOiJwYXNzIiwiaWF0IjoxNzg4MTQ4NjA1LCJleHAiOjE3ODgxNTA0MDV9.5WtuWp0FG3AUCHEWCGeDVMa3kCo-arXARGovKCCCghk
 POST http://localhost/check
 Content-Type: application/json
+Authorization: {{token}}
