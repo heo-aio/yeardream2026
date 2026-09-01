@@ -1,0 +1,11 @@
+1. Front-End 와 Back-End 의 구분
+- FE 요청 -> BE app.js -> router.js -> 처리(model) -> 응답
+
+2. console 의 중요성
+- console.log('표시',표시할데이터);
+
+3. server 는 가급적 변화가 생겼을 때 재시작
+
+4. AI 질문시 만들어줘가 아닌, 에러메시지 또는 왜 그런건지에 대한 질문
+
+5. 할수 있는것 부터
