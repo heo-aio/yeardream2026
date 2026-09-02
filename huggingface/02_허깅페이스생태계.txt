@@ -28,3 +28,12 @@ tokenizer_config.json
   "tokenizer_class": "TokenizersBackend",	// 토크나이저를 인스턴스화할 때 사용하는 클래스 이름을 지정
   "unk_token": "[UNK]"	// 어휘집에 등록되지 않은 단어나 문자가 들어왔을 때 대체 처리 : UNknown Token
 }
+
+# 허깅 페이스 토큰 발급 및 로그인
+1. 회원가입 -> 로그인
+2. 우측 상단 프로필 클릭 -> settings -> Access Tokens
+-> Create new Token 클릭
+Type 을 Read 로 설정 -> 토큰 생성 -> 복사해 둔다.
+* Read : 읽기 권한
+Fine-grained : 세부권한 제어
+Write : 읽기 + 쓰기
