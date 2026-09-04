@@ -16,4 +16,6 @@ with torch.no_grad():
 
 pooler = outputs.pooler_output
 
-print(pooler.shape) # torch.Size([1, 768])
+print(pooler.shape) # torch.Size([1, 768])[문장,벡터]
+print("=== pooler 는 문장 전체의 벡터를 갖는다. ===")
+print(f"pooler vector : {pooler[0,:5].tolist()}")
