@@ -18,7 +18,7 @@ def benchmark(attn_type,name):
         dtype=torch.float16,
         low_cpu_mem_usage=True, # cpu, mem 절약
         attn_implementation=attn_type,
-        device_map="auto"
+        device_map="auto" # cuda, mps(mac)
     )
 
     # 실행
