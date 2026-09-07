@@ -3,6 +3,7 @@
     Backbone - 문장을 이해하고 임베딩하는 부분을 담당
     Head - 받은 임베딩 내용을 우리가 원하는 최종 결과로 바꿔주는 부분
 """
+import torch
 from torch import nn, no_grad
 from transformers import PreTrainedModel, AutoModel, AutoTokenizer, AutoConfig
 
@@ -39,9 +40,9 @@ class CustomClassifier(PreTrainedModel):
         cls_vec = outputs.last_hidden_state[:,0,:]
         print(f'[CLS] vector : {cls_vec}')
         # 2. 커스텀헤드에 보내서 최종 결과값을 받아낸다.
-
+        print(f'[cls] vector : {cls_vec}')
         # 3. 결과값 반환
-
+        return  self.custom_head(cls_vec)  # shape: (배치크기, num_labels)
 
 # 2단계 : 토크나이저와 모델 준비
 model_id = "distilbert-base-uncased"
@@ -64,9 +65,19 @@ model.eval() # 학습 과정은 필요없이 추론 결과만 보고자 할 때
 
 with no_grad():
     logit = model(inputs['input_ids'],inputs['attention_mask'])
-
 print(f'model  출력 : {logit}')
 
+# dim=0 세로 방향을 따라 연산
+# dim=1/-1 가로 방향을 따라 이동
+probs = torch.softmax(logit, dim=-1)
+print("\n확률로 변환 (softmax):\n", probs)
 
+# 가장 확률이 높은 클래스를 예측 결과로 선택
+predictions = torch.argmax(probs, dim=-1)
+print("\n예측 클래스 (0=부정, 1=긍정):\n", predictions)
+
+save_path = "./my_custom_model"
+model.save_pretrained(save_path)
+tokenizer.save_pretrained(save_path)
 
 
