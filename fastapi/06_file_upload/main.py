@@ -46,7 +46,8 @@ def upload(files: List[UploadFile]):
         logger.info(f'file name : {file.filename}') # img.png -> 12345679.png
         ori_filename = file.filename
         # 1. 파일명과 확장자 분리
-        name,ext = ori_filename.split('.')
+        # name,ext = ori_filename.split('.') # . 을 기준으로 나눈다.
+        name,ext = os.path.splitext(ori_filename)  # 확장자 기준으로 나눈다.
         logger.info(f'{name} / {ext}')
         # 2. 파일명 변경
         new_filename = f'{uuid.uuid4()}.{ext}'
