@@ -1,8 +1,10 @@
 # uv pip install -r requirements.txt
 import logging
 import os
+import uuid
+from typing import List
 
-from fastapi import FastAPI
+from fastapi import FastAPI, UploadFile
 from starlette.middleware.cors import CORSMiddleware
 from starlette.responses import RedirectResponse
 from starlette.staticfiles import StaticFiles
@@ -37,7 +39,19 @@ app.add_middleware(CORSMiddleware,allow_origins=["*"], allow_methods=["*"])
 def main():
     return RedirectResponse("/view/upload.html")
 
+@app.post("/upload")
+def upload(files: List[UploadFile]):
 
+    for file in files:
+        logger.info(f'file name : {file.filename}') # img.png -> 12345679.png
+        ori_filename = file.filename
+        # 1. 파일명과 확장자 분리
+        name,ext = ori_filename.split('.')
+        logger.info(f'{name} / {ext}')
+        # 2. 파일명 변경
+        new_filename = f'{uuid.uuid4()}.{ext}'
+        logger.info(f'new file name = {new_filename}')
+        # 3. 새로운파일명 + 확장자
 
 
 
