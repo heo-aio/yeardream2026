@@ -8,7 +8,7 @@ from typing import List
 
 from fastapi import FastAPI, UploadFile
 from starlette.middleware.cors import CORSMiddleware
-from starlette.responses import RedirectResponse
+from starlette.responses import RedirectResponse, FileResponse
 from starlette.staticfiles import StaticFiles
 
 app = FastAPI()
@@ -53,7 +53,7 @@ def upload(files: List[UploadFile]):
             name,ext = os.path.splitext(ori_filename)  # 확장자 기준으로 나눈다.
             logger.info(f'{name} / {ext}')
             # 2. 파일명 변경 + 3. 새로운파일명 + 확장자
-            new_filename = f'{uuid.uuid4()}.{ext}'
+            new_filename = f'{uuid.uuid4()}{ext}'
             logger.info(f'new file name = {new_filename}')
             # 4. 파일 저장
             save_path = f'{FILE_PATH}/{new_filename}'
@@ -70,8 +70,27 @@ def upload(files: List[UploadFile]):
 
     return {"msg":msg}
 
+@app.get("/files")
+def files():
+    # 특정 경로의 파일 리스트를 가져옴
+    file_list = os.listdir(FILE_PATH)
+    logger.info(file_list)
+    return {"files":file_list}
 
+@app.get("/delete")
+def delete(filename:str):
+    path = f'{FILE_PATH}/{filename}'
+    if os.path.exists(path):
+        os.remove(path)
+    return RedirectResponse("/view/file_list.html")
 
+@app.get("/download")
+def download(filename:str):
+    path = f'{FILE_PATH}/{filename}'
+    if os.path.exists(path):
+        return FileResponse(path,media_type="application/octet-stream",filename=filename)
+    else:
+        return {"msg":"해당 파일이 없습니다."}
 
 
 
