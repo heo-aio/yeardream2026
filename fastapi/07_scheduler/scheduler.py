@@ -1,6 +1,6 @@
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
-from jobs import task1
+from jobs import task1, task2, task3
 
 
 def sch_start():
@@ -15,4 +15,31 @@ def sch_start():
                 id='task1',
                 args=['Fast API'])
 
+    # 2-2. 주기적 실행(초,분,시)
+    # seconds, minutes, hours
+    sch.add_job(task2,'interval',
+                seconds=10,
+                id='task2',
+                args=['News 사이트'])
+
+    # 2-3. 주기적실행(cron)
+    # second=0-59, */5(5초마다)
+    # minute=0-59, */5
+    # hour=0-23
+    # day_of_week= SUN-SAT
+    # day=1-31
+    # month=1-12
+    sch.add_job(task3,'cron',
+                minute='*/1',
+                day_of_week='MON-FRI',
+                id='task3',
+                args=['수집한 데이터']
+                )
     return sch # 반환
+
+
+
+
+
+
+
