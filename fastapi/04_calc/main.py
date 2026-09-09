@@ -1,5 +1,6 @@
 # uv pip install uvicorn fastapi
 # uvicorn main:app --reload
+import time
 from fastapi import FastAPI
 from starlette.responses import RedirectResponse
 from starlette.staticfiles import StaticFiles
@@ -16,6 +17,7 @@ def main():
 @app.get("/calc")
 def calc(val1:int,oper:str,val2:int):
     print(f'{val1} {oper} {val2} = ?')
+    time.sleep(5)
     result = 0
     if oper == '+':
         result = val1 + val2
