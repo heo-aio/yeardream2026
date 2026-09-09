@@ -1,0 +1,47 @@
+# uv pip install -r requirements.txt
+import logging
+import os
+
+from fastapi import FastAPI
+from starlette.middleware.cors import CORSMiddleware
+from starlette.responses import RedirectResponse
+from starlette.staticfiles import StaticFiles
+
+app = FastAPI()
+
+# 일반 print 로그의 단점
+# 로그가 찍힌 시간, 위치 등을 알 수 없다.
+# DEBUG > INFO > WARNING > ERROR > CRITICAL
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(levelname)s:     [%(name)s] %(message)s - %(asctime)s',
+    datefmt='%Y-%m-%d %H:%M:%S'
+)
+
+logger = logging.getLogger(__name__)
+
+logger.info("logger test!!")
+
+FILE_PATH = './upload'
+
+# 특정 경로에 폴더 생성
+if not os.path.exists(FILE_PATH):
+    os.makedirs(FILE_PATH)
+    logger.info(f"{FILE_PATH} 생성!")
+
+app.mount("/view",StaticFiles(directory="view"))
+app.mount("/images",StaticFiles(directory=FILE_PATH))
+app.add_middleware(CORSMiddleware,allow_origins=["*"], allow_methods=["*"])
+
+@app.get("/")
+def main():
+    return RedirectResponse("/view/upload.html")
+
+
+
+
+
+
+
+
+
