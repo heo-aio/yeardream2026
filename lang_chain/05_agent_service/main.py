@@ -15,4 +15,6 @@ def index():
 @app.post("/ask/chat")
 def ask_chat(param:ChatModel):
     print(param.q)
-    return StreamingResponse(start_agent(param.q),media_type="text/plain")
+    return StreamingResponse(
+        start_agent(param.q),
+        media_type="text/plain")
