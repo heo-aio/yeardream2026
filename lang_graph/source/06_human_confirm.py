@@ -1,0 +1,42 @@
+# 1. 저장소 생성
+from langchain_ollama import ChatOllama
+from langgraph.constants import END
+from langgraph.graph import StateGraph
+from pydantic import BaseModel
+
+class EmailState(BaseModel):
+    title:str=""
+    email_detail:str=""
+
+# 2. 모델 호출
+llm = ChatOllama(model="gemma4:e4b", temperature=2)
+
+# 3. 노드/라우터함수 선언
+def write_mail_node(state:EmailState) -> EmailState:
+    """주워진 제목으로 이메일을 작성하는 노드"""
+    prompt = f"""
+    당신은 사내메일 작성 담당자 입니다.
+    제목 - {state.title}
+    에 대한 이메일을 정중하고 격식있는 어조로 한글로만 작성해 주세요.
+    불필요한 설명이나 참고, 팁 등은 필요없이 오직 메일 내용만 출력하세요.
+    """
+    print('메일 작성 중...')
+    resp = llm.invoke(prompt)
+    print(f'[완성된 메일]')
+    content = resp.content.strip()
+    print(content)
+    state.email_detail = content
+    return state
+
+# 4. 저장소,노드 등록
+wf = StateGraph(EmailState)
+wf.add_node('writer',write_mail_node)
+
+# 5. 엣지 등록(조립)
+wf.set_entry_point('writer')
+wf.add_edge('writer',END)
+
+app = wf.compile()# 6. 컴파일
+# 7. 실행
+result = app.invoke({"title":"전사 야우회 참여 공지 메일"})
+print(result)
