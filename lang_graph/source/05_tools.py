@@ -43,13 +43,30 @@ def agent_node(state:AgentState) -> Dict:
     print(f"[AGENT NODE]    {resp}")
     return {'messages':[resp]}
 
+def tool_node(state:AgentState) -> Dict:
+    """LLM 의 요청에 따라서 필요한 툴을 실행하는 노드"""
+    # 메시지들 중에서 직전의(마지막) 메시지인 AIMessage 를 가져온다.
+    last_msg = state['messages'][-1]
+
+    for call in last_msg.tool_calls:
+        name = call['name']
+        args = call['args']
+        call_id = call['id']
+        print(f'id : {call_id} 실행!!')
+        print(f'{name}({args})')
+
+    return {'messages':[]}
+
+
 # 6. 저장소 및 노드 등록
 wf = StateGraph(AgentState)
 wf.add_node("agent",agent_node)
+wf.add_node("tool",tool_node)
 
 # 7. 엣지 조립
 wf.set_entry_point("agent")
-wf.add_edge("agent",END)
+wf.add_edge("agent","tool")
+wf.add_edge("tool",END)
 app = wf.compile()# 8. 컴파일
 # 9. 실행
 resp = app.invoke({'messages':[HumanMessage(content="256 곱하기 4가 무엇인지 계산해 주세요")]})
