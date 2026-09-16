@@ -22,21 +22,30 @@ def write_mail_node(state:EmailState) -> EmailState:
     """
     print('메일 작성 중...')
     resp = llm.invoke(prompt)
-    print(f'[완성된 메일]')
-    content = resp.content.strip()
-    print(content)
+    print(f'[메일 작성 완료]')
+    content = resp.content.strip().replace("*","")
+    # print(content)
     state.email_detail = content
     return state
+
+def send_mail_node(state:EmailState) -> None:
+    """메일을 발송해 주는 노드"""
+    print("메일이 발송 되었습니다.")
+    print("[발송된 내용]")
+    print(state.email_detail)
+
 
 # 4. 저장소,노드 등록
 wf = StateGraph(EmailState)
 wf.add_node('writer',write_mail_node)
+wf.add_node("send",send_mail_node)
 
 # 5. 엣지 등록(조립)
 wf.set_entry_point('writer')
-wf.add_edge('writer',END)
+wf.add_edge('writer','send')
+wf.add_edge('send',END)
 
 app = wf.compile()# 6. 컴파일
 # 7. 실행
-result = app.invoke({"title":"전사 야우회 참여 공지 메일"})
+result = app.invoke({"title":"전사 야유회 참여 공지 메일"})
 print(result)
