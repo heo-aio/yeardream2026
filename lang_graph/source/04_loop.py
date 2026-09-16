@@ -1,4 +1,6 @@
 # 1. 저장소 생성
+import json
+
 from langchain_ollama import ChatOllama
 from langgraph.constants import END
 from langgraph.graph import StateGraph
@@ -56,7 +58,7 @@ def critic_node(state:WriteState) -> WriteState:
 
         [출력조건]
         다른설명 필요 없이 아래 형태의 JSON 포맷으로 응답해야함
-        ``` 등의 JSON 에 불필요한 문자는 모두 제외
+        ``` 나 ```json 등의 json 이나 코드를 표기하는 문자는 제외
         {{
         "state":"오직 PASS 또는 RETRY 만 표기",
         "feedback":"state 가 RETRY 일 경우 조건을 만족하지 못하는 이유, PASS 일 경우 칭찬"
@@ -64,6 +66,9 @@ def critic_node(state:WriteState) -> WriteState:
     """
     resp = llm.invoke(prompt)
     print(resp.content)  # JSON 형태만 깔끔하게 잘 나오는가?
+    result = json.loads(resp.content.strip()) # 정식 JSON 객체 생성(dict 와 같은 형태)
+    state.state = result['state']
+    state.feedback = result['feedback']
     return state
 
 def route_by_review(state:WriteState) -> str:
