@@ -17,3 +17,16 @@ sudo mysql_secure_installation
 # Disallow root login remotely? Y (원격 root 접속 제한)
 # Remove test database and access to it? Y (테스트 DB 삭제)
 # Reload privilege tables now? Y (권한 적용)
+
+#  관리자(root) 로 접속해 보기
+sudo mysql -u root -p
+
+# USER 생성
+# CREATE USER [ID]@[접속IP] IDENTIFIED BY [비밀번호]
+CREATE USER 'web_user'@'%' IDENTIFIED BY 'user@pass';
+# 확인
+SELECT user,password FROM mysql.user;
+
+# 권한 생성
+# GRANT [권한 종류] ON [어디에서 사용할수 있는지] TO [권한줄 유저]
+GRANT ALL PRIVILEGES ON *.* TO 'web_user'@'%';
