@@ -61,6 +61,7 @@ wf.add_conditional_edges(
 wf.add_edge('send',END)
 
 # 6. 컴파일(저장소,멈춤 위치)
+# writer 이후에 approval 을 변경, 안그럼 router 단에서 계속 False 로 잡는 문제
 app = wf.compile(checkpointer=MemorySaver(), interrupt_after=['writer'])
 
 # 7. 실행
