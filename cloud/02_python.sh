@@ -29,8 +29,26 @@ cat requirements.txt
 # 라이브러리 설치
 uv pip install -r requirements.txt
 
-# 실행
+# 4. 실행
 uvicorn main:app --host=0.0.0.0 --port=8000 --workers 2
+
+# 멈추지 않고 실행하는 방법
+# nohup : 종료되지 않고 계속 실행할수 있게 해준다.
+# > uvicorn.log 실행 내용을 uvicorn.log 로 남기겠다.
+# 2>&1 : 2는 에러로그 1은 표준출력로그 -> 에러로그도 표준출력 로그처럼 출력해라
+# 2>1 로 하면 에러로그를 파일명 1에 저장하라고 오해할 수 있어 특수문자 &를 붙임
+# & : 백그라운드로 실행하라 -> 내 UI 가리지 마
+nohup uvicorn main:app --host=0.0.0.0 --port=8000 --workers 2 > uvicorn.log 2>&1 &
+
+# 로그확인 방법
+# 실시간
+tail -f uvicorn.log
+# 읽기
+cat uvicorn.log
+vim uvicorn.log
+
+# 5. 끄기
+
 
 # 가상환경 종료
 deactivate
