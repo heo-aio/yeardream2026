@@ -1,3 +1,4 @@
+# https://settings.aws.com/projects/ssoins-7223fe38e11bf5c8/984549030077
 # ec2-user
 
 # npm<-node.js, pip<-python, yum <- linux 에서 사용
