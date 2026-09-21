@@ -98,6 +98,15 @@ SELECT
 	(SELECT COUNT(deptno) FROM emp WHERE deptno = dept.deptno) as cnt
 FROM dept; -- dept 의 모든 deptno 를 불러옴
 
+-- SELECT deptname FROM dept WHERE deptno = 1
+SELECT 
+	e.deptno,
+	(SELECT deptname FROM dept WHERE deptno = e.deptno) AS name,
+	COUNT(deptno) AS cnt 
+FROM emp e GROUP BY e.deptno;
+
+= (((3+4)*2)/2)+((3+9)*2/4)
+
 
 
 
