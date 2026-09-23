@@ -51,6 +51,7 @@ FROM employees e JOIN titles t ON e.emp_no = t.emp_no
 SELECT COUNT(emp_no) FROM employees; -- 300,024
 SELECT COUNT(emp_no) FROM dept_emp; -- 331,603
 
+
 -- 문제 2 : 팀 이동이 있었던 사원의 이름을 가져오세요
 -- 1 단계 : 부서이동이 있는 사람의 사원번호 추출
 SELECT 
@@ -115,6 +116,53 @@ IN (SELECT de.emp_no FROM dept_emp de GROUP BY emp_no HAVING COUNT(de.emp_no) > 
 -- 이후 emp_no 와 to_date 순으로 정렬
 ORDER BY de.emp_no, de.to_date; -- 0.802 S
 
+
+-- 문제 4. 현재 MANAGER 들의 이름, 성별, 입사일, 소속팀명
+-- 현재 팀장들의 사원번호와 팀번호
+SELECT dm.emp_no, dm.dept_no FROM dept_manager dm WHERE dm.to_date = '9999-01-01';
+-- 사원정보
+SELECT e.first_name, e.last_name, e.gender, e.hire_date FROM employees e WHERE emp_no = '110039';
+-- 팀 이름
+SELECT d.dept_name FROM departments d WHERE d.dept_no = 'd001';
+
+-- JOIN?(1개이상 컬럼을 가져올때) 서브쿼리?(1개컬럼 가져올 경우) 어느게 좋은가?
+-- 1단계 : dept_manager 와 employees 를 JOIN
+-- 2단계 : dept_name 에 대해서만 서브쿼리로 가져온다.
+SELECT 
+	CONCAT(e.first_name,', ',e.last_name) AS name,
+	e.gender,
+	e.hire_date,
+	(SELECT dept_name FROM departments WHERE dept_no = dm.dept_no) AS team_name
+FROM dept_manager dm NATURAL JOIN employees e 
+ORDER BY e.hire_date;
+
+
+-- 문제 5. 현재 직원들의 사번, 이름, 직책, 급여
+SELECT e.emp_no, e.first_name, e.last_name FROM employees e;
+SELECT t.emp_no, t.title FROM titles t WHERE t.to_date = '9999-01-01';
+SELECT s.emp_no, s.salary FROM salaries s WHERE s.to_date = '9999-01-01';
+-- 조합
+-- NULL 이 나타나는 데이터 발생(알고보니 employees 는 퇴사자의 데이터도 모두 가지고 있음)
+-- 그리고 그사람이 퇴사상태인지 알수 있는 방법도 없음
+SELECT 
+	e.emp_no,
+	CONCAT(e.first_name,', ',e.last_name) AS name,
+	(SELECT s.salary FROM salaries s 
+		WHERE s.to_date = '9999-01-01' AND s.emp_no = e.emp_no)AS 급여,
+	(SELECT t.title FROM titles t 
+		WHERE t.to_date = '9999-01-01' AND t.emp_no = e.emp_no) AS 팀명
+FROM employees e;
+
+SELECT * FROM titles t WHERE t.emp_no = 10008;
+
+-- 그래서 기본 데이터를 titles 에서 시작한다.
+SELECT 
+	t.emp_no,
+	(SELECT 
+		CONCAT(first_name,',',last_name) FROM employees WHERE emp_no = t.emp_no) AS 이름,
+	(SELECT salary FROM salaries WHERE emp_no = t.emp_no AND to_date = '9999-01-01') AS 급여,
+	t.title AS 직급
+FROM titles t WHERE t.to_date = '9999-01-01';
 
 
 
