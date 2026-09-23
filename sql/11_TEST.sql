@@ -77,8 +77,18 @@ FROM employees e JOIN
 ON e.emp_no = d.emp_no; -- 0.237 S
 
 
-
-
+-- 문제 3 : 각 인원들이 어느팀에서 어느팀으로 이동했는지 알아보기
+-- 이름, 팀명, from_date, to_date
+-- 이름 팀명은 모르지만, 이동 순서대로 정렬
+SELECT 
+	-- 이후 emp_no 와 dept_no 를 통해 서브쿼리로 원하는 데이터 추출
+	(SELECT CONCAT(first_name,',',last_name) FROM employees WHERE emp_no = de.emp_no) AS name,
+	(SELECT dept_name FROM departments WHERE dept_no = de.dept_no)AS team_name,
+	de.from_date,
+	de.to_date
+FROM dept_emp de WHERE de.emp_no 
+IN (SELECT de.emp_no FROM dept_emp de GROUP BY emp_no HAVING COUNT(de.emp_no) > 1)
+ORDER BY emp_no, from_date; -- 0.25S
 
 
 
