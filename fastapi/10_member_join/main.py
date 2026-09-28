@@ -6,7 +6,7 @@ from sqlalchemy import text
 from starlette.responses import RedirectResponse
 from starlette.staticfiles import StaticFiles
 
-from bcrypt_tuils import encode_pass, matches
+from bcrypt_utils import encode_pass, matches
 from db import get_conn
 
 app = FastAPI()
