@@ -6,6 +6,7 @@ from sqlalchemy import text
 from starlette.responses import RedirectResponse
 from starlette.staticfiles import StaticFiles
 
+from bcrypt_tuils import encode_pass
 from db import get_conn
 
 app = FastAPI()
@@ -49,6 +50,10 @@ def join(info:Dict[str,Any]): # POST 방식은 파라메터를 Dict 또는 class
     # DB 접속
     conn = get_conn()
     row = 0
+
+    # pw 를 암호화 하여 넣어줘야 한다.
+    info['pw'] = encode_pass(info['pw'])
+
     # 쿼리문 준비
     sql = text("""INSERT INTO member(id,pw,name,age,gender,email)
                 VALUES(:id,:pw,:name,:age,:gender,:email)""")
