@@ -57,8 +57,11 @@ def join(info:Dict[str,Any]): # POST 방식은 파라메터를 Dict 또는 class
         # 결과확인(쿼리 실행 결과를 담은 객체)
         logger.info(f"result={result.rowcount}")
         row = result.rowcount
+        if row > 0:
+            conn.commit()
     except Exception as e:
         logger.error(e)
+        conn.rollback()
     finally:
         conn.close() # DB 접속 종료
     return {'row':row}
