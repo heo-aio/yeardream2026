@@ -3,10 +3,11 @@ from typing import Dict, Any
 
 from fastapi import FastAPI
 from sqlalchemy import text
+from starlette.requests import Request
 from starlette.responses import RedirectResponse
 from starlette.staticfiles import StaticFiles
 
-from bcrypt_utils import encode_pass, matches
+from bcrypt_utils import encode_pass, matches, get_token
 from db import get_conn
 
 app = FastAPI()
@@ -25,7 +26,7 @@ def main():
     return RedirectResponse("/view/login.html")
 
 @app.post("/login")
-def login(info:Dict[str,str]):
+def login(info:Dict[str,str], req:Request):
     json = {'success':False, 'token':''}
     logger.info(f'info={info}')
     # 1. 입력받은 id 를 통해 pw 가져옴
@@ -37,7 +38,9 @@ def login(info:Dict[str,str]):
         result = conn.execute(sql,{"id":info['id']}).mappings().fetchone()
         success = matches(info['pw'],result['pw'])
         # 3. True 일 경우 로그인 성공으로 가정
-        json.update({'success':success,'token':''})
+        if success:
+            token = get_token({"id":info["id"],"ip":req.client.host})
+            json.update({'success':success,'token':token})
     except Exception as e:
         logger.error(e)
     finally:

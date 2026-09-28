@@ -59,14 +59,10 @@ def verify_token(token:str) -> Dict[str,Any]:
         payload = jwt.decode(token,SECRET_KEY,algorithms=ALGORITHM)
     except Exception as e: # 비밀키가 틀렸거나, 토큰 시간이 만료된 경우
         print(e)
-
     return payload
-
+"""
 result_token = get_token({"id":"admin","name":"김지훈"})
 print(f'생성된 토큰 : {result_token}')
 result_payload = verify_token(result_token)
 print(f'payload : {result_payload}')
-
-
-
-
+"""
