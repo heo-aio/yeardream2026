@@ -28,9 +28,20 @@ print(f'ids 를 활용해 데이터 가져오기 : {results}')
 results = coll.query(query_texts=["비밀번호 찾기"],n_results=1)
 print(f'{results['documents']} / {results['distances']}')
 
+# 3. 데이터 수정
+coll.update(
+    documents=["로그인 방법 : 우측 상단 '로그인' 버튼 클릭 후 아이디 입력"],
+    metadatas=[{"category":"auth","importance":3}],
+    ids=["doc1"])
 
+# doc1 에 대해서 변경되었는지 확인
+results = coll.get(ids=["doc1"])
+print(f'ids 를 활용해 데이터 가져오기 : {results}')
 
-
+# 4. 데이터 삭제
+coll.delete(ids=["doc3"])
+data_list = coll.get()
+print(data_list)
 
 
 
