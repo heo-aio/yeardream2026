@@ -6,7 +6,7 @@ from sqlalchemy import text
 from starlette.responses import RedirectResponse
 from starlette.staticfiles import StaticFiles
 
-from bcrypt_tuils import encode_pass
+from bcrypt_tuils import encode_pass, matches
 from db import get_conn
 
 app = FastAPI()
@@ -22,7 +22,28 @@ logger = logging.getLogger(__name__)
 
 @app.get("/")
 def main():
-    return RedirectResponse("/view/index.html")
+    return RedirectResponse("/view/login.html")
+
+@app.post("/login")
+def login(info:Dict[str,str]):
+    json = {'success':False, 'token':''}
+    logger.info(f'info={info}')
+    # 1. 입력받은 id 를 통해 pw 가져옴
+    conn = get_conn()
+    sql = text("SELECT pw FROM member WHERE id = :id")
+
+    try:
+        # 2. 입력받은 pw 와 가져온 pw 를 비교
+        result = conn.execute(sql,{"id":info['id']}).mappings().fetchone()
+        success = matches(info['pw'],result['pw'])
+        # 3. True 일 경우 로그인 성공으로 가정
+        json.update({'success':success,'token':''})
+    except Exception as e:
+        logger.error(e)
+    finally:
+        conn.close()
+
+    return json
 
 @app.get("/overlay")
 def overlay(id:str):
