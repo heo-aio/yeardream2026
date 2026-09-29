@@ -64,7 +64,38 @@ def insert_data(path:str) -> None:
 
 # insert_data('data/운수좋은날.pdf')
 
+def search_data(query:str) -> None:
+    print(f'질문내용 : {query}')
+    results = coll.query(
+        query_texts=[query],
+        n_results=5,
+    )
+    # print(results) # chroma db 에서 가져온 내용
+    # 가져온 리스트 안의 내용을 줄바꿈 두번으로 붙여서 하나의 텍스트로 만든다.
+    context = "\n\n".join(results['documents'][0])
 
+    # llm 에 전달할 프롬프트 작성
+    prompt = f"""
+    당신은 소설 분석 전문가 입니다. 제공된 [소설 본문 발췌]를 바탕으로 사용자의 [질문]에 답하세요.
+    본문에 근거하여인물의 심리, 사건의 배경, 복선 등을 상세히 분석해 주세요.
+    
+    [소설 본문 발췌]
+    {context}
+    
+    [질문]
+    {query}    
+    """
+
+
+
+
+
+
+
+question = input('소설 운수 좋은 날에 대한 질문을 해 주세요\n')
+# 이 소설의 주인공은 누구야?
+# 이 소설의 줄거리에 대해서 요약해줘
+search_data(question)
 
 
 
