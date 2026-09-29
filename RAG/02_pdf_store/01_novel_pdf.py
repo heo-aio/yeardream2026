@@ -4,6 +4,7 @@ import tiktoken
 from PyPDF2 import PdfReader
 from chromadb.utils import embedding_functions
 from langchain_text_splitters import RecursiveCharacterTextSplitter
+import ollama
 
 ollama_ef = embedding_functions.OllamaEmbeddingFunction(
     url="http://localhost:11434",
@@ -86,11 +87,9 @@ def search_data(query:str) -> None:
     {query}    
     """
 
-
-
-
-
-
+    resp = ollama.generate(model='gemma4:e4b', prompt=prompt, stream=True)
+    for chunk in resp:
+        print(chunk['response'],end="", flush=True)
 
 question = input('소설 운수 좋은 날에 대한 질문을 해 주세요\n')
 # 이 소설의 주인공은 누구야?
