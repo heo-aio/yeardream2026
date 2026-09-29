@@ -27,9 +27,9 @@ def my_tokenizer(text:str) -> int:
     if len(text) < 2: # 2글자 미만은 토크나이징 안함
         return 0
     # 사용될 토큰 크기 반환
-    print(f"text:{text}")
+    #print(f"text:{text}")
     token_len = len(tokenizer.encode(text))
-    print(f'token size : {token_len}')
+    #print(f'token size : {token_len}')
     return token_len
 
 # 4. 데이터 저장
@@ -50,9 +50,19 @@ def insert_data(path:str) -> None:
     )
     # 데이터 끊어주기
     chunks = text_spliter.split_text(text)
-    print(f'chunks = {chunks}')
+    #print(f'chunks = {chunks}')
+    # chromadb 에 입력
+    """
+    ids = []
+    for i in range(len(chunks)):
+        ids.append(f"idx_{i}")
+    """
+    ids = [f"idx_{i}" for i in range(len(chunks))]
+    coll.upsert(documents=chunks,ids=ids)
+    print(f'저장 완료 {len(chunks)}개 문맥 확보')
+    print(coll.get())
 
-insert_data('data/운수좋은날.pdf')
+# insert_data('data/운수좋은날.pdf')
 
 
 
