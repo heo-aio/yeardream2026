@@ -1,6 +1,7 @@
 # 1. 임베딩 함수 지정(chromadb 의 기본 임베딩을 사용하지 않을 경우)
 import chromadb
 import tiktoken
+from PyPDF2 import PdfReader
 from chromadb.utils import embedding_functions
 
 ollama_ef = embedding_functions.OllamaEmbeddingFunction(
@@ -26,6 +27,17 @@ def my_tokenizer(text:str) -> int:
         return 0
     # 사용될 토큰 크기 반환
     return len(tokenizer.encode(text))
+
+# 4. 데이터 저장
+def insert_data(path:str) -> None:
+    # 4-1. 특정 PDF 를 불러와 읽는다.
+    reader = PdfReader(path)
+    for i, page in enumerate(reader.pages):
+        text = page.extract_text()
+        print(f'{i} PAGE')
+        print(text)
+
+insert_data('data/운수좋은날.pdf')
 
 
 
