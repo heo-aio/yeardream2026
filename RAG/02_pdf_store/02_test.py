@@ -24,7 +24,7 @@ coll = client.get_or_create_collection(
 def insert_data(path: str) -> None:
     lecture = path.split('/')[1].rsplit('.',1)[0].lower()
     print(lecture)
-    """
+
     # 4-1. 특정 PDF 를 불러와 읽는다.
     reader = PdfReader(path)
     text = ''
@@ -35,13 +35,14 @@ def insert_data(path: str) -> None:
 
     # 9페이지짜리 문자를 통으로 넣을수 없기에 잘라줘야 한다.(chunking 작업)
     text_spliter = RecursiveCharacterTextSplitter(
-        chunk_size=800,  # 최대 청크 크기
-        chunk_overlap=50,  # 청크간 전후 문맥 파악을 위해 겹쳐지는 수
+        chunk_size=400,  # 최대 청크 크기
+        chunk_overlap=25,  # 청크간 전후 문맥 파악을 위해 겹쳐지는 수
         length_function=len,  # 토큰의 길이를 뭘로 정해?
     )
     # 데이터 끊어주기
     chunks = text_spliter.split_text(text)
-    # print(f'chunks = {chunks}')
+    print(f'{lecture} chunks = {len(chunks)}')
+    """
     # chromadb 에 입력
     ids = [f"idx_{i}" for i in range(len(chunks))]
     coll.upsert(documents=chunks, ids=ids)
