@@ -52,7 +52,7 @@ def insert_data(path: str) -> None:
     print(f'저장 완료 {len(chunks)}개 문맥 확보')
     print(coll.get(where={'subject':lecture}))
 
-# insert_data('data/pandas.pdf')
+insert_data('data/pandas.pdf')
 # insert_data('data/scikit_learn.pdf')
 # insert_data('data/FASTAPI.pdf')
 
@@ -63,10 +63,10 @@ def search_data(subject:str, query: str) -> None:
         n_results=5,
         where={'subject':{'$eq':subject}}
     )
-    # print(results) # chroma db 에서 가져온 내용
+    print(results) # chroma db 에서 가져온 내용
     # 가져온 리스트 안의 내용을 줄바꿈 두번으로 붙여서 하나의 텍스트로 만든다.
     context = "\n\n".join(results['documents'][0])
-
+    print(f'context : {context}')
     # llm 에 전달할 프롬프트 작성
     prompt = f"""
     당신은 python 을 이용한 머신러닝 선생님 입니다. 제공된 [학습교제]를 바탕으로 사용자의 [질문]에 답하세요.
