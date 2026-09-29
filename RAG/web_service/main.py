@@ -1,6 +1,7 @@
 import logging
+from typing import List
 
-from fastapi import FastAPI
+from fastapi import FastAPI, UploadFile, Form, File
 from starlette.middleware.cors import CORSMiddleware
 from starlette.responses import RedirectResponse
 from starlette.staticfiles import StaticFiles
@@ -22,3 +23,10 @@ logger = logging.getLogger(__name__)
 def main():
     logger.info("main page 접근 완료")
     return RedirectResponse("/view/index.html")
+
+# file 과 문자열 파라메터가 섞여서 들어올때 처리 방법
+@app.post("/upload")
+def upload(subject:str = Form(...), files:List[UploadFile] = File([])):
+    logger.info(f"subject: {subject}")
+    logger.info(f"files : {files}")
+    return {'upload':''}
