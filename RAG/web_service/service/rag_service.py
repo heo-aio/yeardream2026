@@ -41,4 +41,6 @@ def add_data(subject:str,filename:str):
     store.add_documents(docs)
     print(f'저장된 데이터 수 : {len(store.get()['ids'])}')
 
+def search_obj(subject:str):
+    return store.as_retriever(search_kwargs={'k':5,'filter':{'subject':subject}})
 
