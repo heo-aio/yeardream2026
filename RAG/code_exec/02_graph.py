@@ -11,11 +11,13 @@ from langchain_ollama import ChatOllama
 ### 1. 모델 설정 및 지정
 llm = ChatOllama(model='gemma4:e4b')
 
+
 ### 2. 데이터 불러오기
 data_path = 'data/InkjetDB_preprocessing.csv'
 df_inkjet = pd.read_csv(data_path,index_col=0)
 columns = ",".join(df_inkjet.columns)
 print('=== 데이터 불러오기 ===')
+
 
 ### 3. 데이터 분석 프롬프트 작성
 system_pompt = f"""
@@ -34,6 +36,7 @@ msg_list = [("system",system_pompt), ("human","{question}")]
 prompt = ChatPromptTemplate.from_messages(msg_list)
 code_gen_chain = {"question":RunnablePassthrough()}|prompt|llm|StrOutputParser()
 
+
 ### 5. 대답에서 코드만 추출
 def python_code_parser(text:str):
     code_list = text.replace("```python","```").strip().split("```")
@@ -44,6 +47,7 @@ def python_code_parser(text:str):
 
 ### 6. chain 으로 코드 추출 조합
 code_extract_chain = code_gen_chain|python_code_parser
+
 
 ### 7. 추출한 코드 실행 -> 거기서 출력된 내용을 output 에 담아 밖으로 내보냄
 def run_code(input_code:str):
@@ -56,6 +60,7 @@ def run_code(input_code:str):
     except Exception as e:
         print(f'Error : {e}',file=output)
     return output.getvalue()
+
 
 # 코드 실행 결과 보기
 code_exec_chain = code_extract_chain | run_code
