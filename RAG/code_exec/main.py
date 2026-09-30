@@ -1,3 +1,6 @@
+import contextlib
+import io
+
 import pandas as pd
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
@@ -32,8 +35,8 @@ msg_list = [ # 메시지리스트 안의 개별메시지는 Tuple 형태여야 �
 ]
 prompt = ChatPromptTemplate.from_messages(msg_list)
 code_gen_chain = {"question":RunnablePassthrough()}|prompt|llm|StrOutputParser()
-result = code_gen_chain.invoke("Velocity가 가장 큰 데이터를 찾고 싶어")
-print(result)
+#result = code_gen_chain.invoke("Velocity가 가장 큰 데이터를 찾고 싶어")
+#print(result)
 
 ### 5. 대답에서 코드만 추출
 def python_code_parser(text:str):
@@ -45,5 +48,29 @@ def python_code_parser(text:str):
     if len(code_list) == 1:
         return code_list[0]
     return code_list[1]
-print('###'*30)
-print(python_code_parser(result))
+#print('###'*30)
+#print(python_code_parser(result))
+
+### 6. chain 으로 코드 추출 조합
+code_extract_chain = code_gen_chain|python_code_parser
+# print(code_extract_chain.invoke("Velocity가 가장 큰 데이터를 찾고 싶어"))
+
+### 7. 추출한 코드 실행 -> 거기서 출력된 내용을 output 에 담아 밖으로 내보냄
+def run_code(input_code:str):
+    # 코드를 실행했을때 print 된 내용을 보고싶다.
+    output = io.StringIO() # 문자열이 오갈수 있는 객체
+    try:
+        # 무언가 출력이 나오면 output 으로 보내서 저장해라
+        # 아래 코드가 실행되는 동안만(with 로 인해 다 끝나면 자동으로 자원은 닫힌다.)
+        with contextlib.redirect_stdout(output):
+            # exec(code, 필요한변수)
+            exec(input_code,{'df_inkjet':df_inkjet})
+            # result = df_inkjet.loc[df_inkjet['Velocity'].idxmax()]
+    except Exception as e:
+        print(f'Error : {e}',file=output)
+    return output.getvalue()
+
+# 코드 실행 결과 보기
+code_exec_chain = code_extract_chain | run_code
+print(code_exec_chain.invoke("Velocity가 가장 큰 데이터를 찾고 싶어"))
+
