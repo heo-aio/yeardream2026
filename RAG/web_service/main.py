@@ -6,6 +6,8 @@ from starlette.middleware.cors import CORSMiddleware
 from starlette.responses import RedirectResponse
 from starlette.staticfiles import StaticFiles
 
+from service.file_service import file_upload
+
 app = FastAPI()
 
 app.mount("/view", StaticFiles(directory="view"))
@@ -29,4 +31,15 @@ def main():
 def upload(subject:str = Form(...), files:List[UploadFile] = File([])):
     logger.info(f"subject: {subject}")
     logger.info(f"files : {files}")
-    return {'upload':''}
+    file_list = []
+    for file in files:
+        # 1. 파일 업로드
+        success = file_upload(file)
+        logger.info(f'file upload : {success}')
+        # 2. 성공하면...
+        if success:
+            # 어떤 파일이 업로드 되었는지 리스트 만들기
+            file_list.append(file.filename)
+            # 업로드된 파일의 내용을 chromadb 에 저장
+
+    return {'upload':file_list}
