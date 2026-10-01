@@ -1,4 +1,5 @@
 import chromadb
+import pandas
 from PyPDF2 import PdfReader
 from langchain_chroma import Chroma
 from langchain_core.documents import Document
@@ -32,3 +33,24 @@ def insert_data():
     print(f'{len(coll.get()['ids'])} 개 문서 저장!')
 
 # insert_data()
+
+def load_excel_data():
+    file_name = '한국지능정보사회진흥원_인공지능 학습용 데이터 구축 현황_20210104.csv'
+    return pandas.read_csv(f'{data_dir}/{file_name}',index_col=0)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
