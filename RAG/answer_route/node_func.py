@@ -89,6 +89,26 @@ def excel_data(state:State):
     return {'question': question, 'generation': code,
             'code':code, 'data':data}
 
+def excel_answer(state:State):
+
+    question = state['question']
+    context = state['data']
+
+    sys_prompt = """
+    당신은 데이터를 바탕으로 질문에 답하는 데이터 분석가 입니다.
+    사용자가 입력한 질문을 제공된 데이터를 바탕으로 질문에 답하세요
+    """
+
+    msg_list = [
+        ('system',sys_prompt),
+        ('human','질문:{question}\n데이터:{context}')
+    ]
+
+    chain = ChatPromptTemplate.from_messages(msg_list)|llm|StrOutputParser()
+    answer = chain.invoke({'question':question,'context':context})
+    state['generation'] = answer
+    return state
+
 
 def vector_db(state:State):
     print('RAG 에서 데이터 참고후 답변')

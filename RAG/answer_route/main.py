@@ -1,7 +1,7 @@
 # main stream
 from langgraph.constants import END
 
-from node_func import get_state, init_answer, router, plain_answer, excel_data, vector_db
+from node_func import get_state, init_answer, router, plain_answer, excel_data, vector_db, excel_answer
 
 # Lang Graph
 # State : 그래프 내에서 공유하는 상태객체
@@ -13,6 +13,7 @@ wf.add_node('router',router) # 질문 분배 노드
 wf.add_node('plain_answer',plain_answer) # 일반답변
 # 엑셀 데이터를 이용한 답변 노드
 wf.add_node('excel_data',excel_data)
+wf.add_node('excel_answer',excel_answer)
 # vectorDB 검색을 이용한 답변 노드
 wf.add_node('vector_db',vector_db)
 
@@ -31,11 +32,12 @@ wf.add_conditional_edges(
 
 # edge 등록
 wf.add_edge('plain_answer',END)
-wf.add_edge('excel_data',END)
+wf.add_edge('excel_data','excel_answer')
+wf.add_edge('excel_answer',END)
 wf.add_edge('vector_db',END)
 
 # compile 및 실행
 app = wf.compile()
 query = input('readme.md 질문 내용중 하나를 입력하세요.')
 result = app.invoke({'question':query})
-print(result)
+print(result['generation'])
