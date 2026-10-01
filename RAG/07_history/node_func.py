@@ -60,9 +60,19 @@ def router(state:State):
 def plain_answer(state:State):
     print('학습한 내용 안에서 답변')
     question = state['question']
-    answer = llm.invoke(question)
+    msg_list = []
+    context = state.get('context',[])
+    if len(context) > 0:
+        #[1,2,3].append([4,5,6]) -> [1,2,3,[4,5,6]]
+        #[1,2,3].extend([4,5,6]) -> [1,2,3,4,5,6]
+        msg_list.extend(context)
+    msg_list.append(HumanMessage(content='{question}'))
+    print(msg_list)
+    prompt = ChatPromptTemplate.from_messages(msg_list)
+    chain = prompt|llm|StrOutputParser()
+    answer = chain.invoke({'question':question})
     # print(answer)
-    return {'question':question,'generation':answer.content}
+    return {'question':question,'generation':answer}
 
 def excel_data(state:State):
     print('excel 에서 데이터 참고후 답변')

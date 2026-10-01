@@ -58,4 +58,5 @@ while True:
 # 저장상황 확인
 print('대화 종료, 저장상황 확인')
 history = app.get_state(config)
-print(history.values['context'])
+for ctx in history.values['context']:
+    print(ctx)
