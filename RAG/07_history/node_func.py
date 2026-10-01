@@ -108,14 +108,15 @@ def excel_answer(state:State):
     당신은 데이터를 바탕으로 질문에 답하는 데이터 분석가 입니다.
     사용자가 입력한 질문을 제공된 데이터를 바탕으로 질문에 답하세요
     """
-    msg_list = [
-        ('system',sys_prompt),
-        ('human',f'질문:{question}\n데이터:{data}')
-    ]
+    msg_list = []
     ### context ###
     context = state.get('context',[])
     if len(context) > 0 :
         msg_list.extend(context)
+
+    msg_list.append(('system',sys_prompt))
+    msg_list.append(('human',f'질문:{question}\n데이터:{data}'))
+
     print(msg_list)
     chain = ChatPromptTemplate.from_messages(msg_list)|llm|StrOutputParser()
     answer = chain.invoke({})
@@ -133,12 +134,14 @@ def vector_db(state:State):
     data = ret_chain.invoke(question)
     print(f'참고자료 : {data}')
     msg_list = []
-    msg_list.append(("system","사용자의 질문을 제공하는 정보를 바탕으로 대답하세요"))
-    msg_list.append(("human", f"질문:{question}\n정보:{data}"))
     ### context ###
     context = state.get('context',[])
     if len(context)>0:
         msg_list.extend(context)
+
+    msg_list.append(("system","사용자의 질문을 제공하는 정보를 바탕으로 대답하세요"))
+    msg_list.append(("human", f"질문:{question}\n정보:{data}"))
+
     print(msg_list)
 
     prompt = ChatPromptTemplate.from_messages(msg_list)
