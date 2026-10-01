@@ -7,7 +7,7 @@ from langchain_ollama import ChatOllama
 from langgraph.graph import StateGraph
 
 from store_func import coll, load_excel_data
-from utils import retrieve_to_text
+from utils import retrieve_to_text, python_code_parser, run_code
 
 
 # State 객체
@@ -80,11 +80,14 @@ def excel_data(state:State):
     msg_list.append(('system',sys_prompt))
     msg_list.append(('human','{question}'))
     prompt = ChatPromptTemplate.from_messages(msg_list)
-    chain = prompt|llm|StrOutputParser()
-    result = chain.invoke({'question':question})
-    print(result)
 
-    return {'question': '', 'generation': ''}
+    chain = prompt|llm|StrOutputParser()|python_code_parser
+    code = chain.invoke({'question':question})
+    print(code)
+    data = run_code('excel_df',df,code)
+
+    return {'question': question, 'generation': code,
+            'code':code, 'data':data}
 
 
 def vector_db(state:State):
