@@ -133,14 +133,18 @@ def vector_db(state:State):
     data = ret_chain.invoke(question)
     print(f'참고자료 : {data}')
     msg_list = []
-
     msg_list.append(("system","사용자의 질문을 제공하는 정보를 바탕으로 대답하세요"))
-    msg_list.append(("human", "질문:{question}\n정보:{context}"))
+    msg_list.append(("human", f"질문:{question}\n정보:{data}"))
+    ### context ###
+    context = state.get('context',[])
+    if len(context)>0:
+        msg_list.extend(context)
+    print(msg_list)
 
     prompt = ChatPromptTemplate.from_messages(msg_list)
 
     chain = prompt|llm|StrOutputParser()
-    answer = chain.invoke({'context':data,'question':question})
+    answer = chain.invoke({})
 
     return {'question': question, 'generation': answer, 'data':data}
 
