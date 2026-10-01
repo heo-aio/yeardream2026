@@ -66,6 +66,8 @@ def excel_data(state:State):
 
 def vector_db(state:State):
     print('RAG 에서 데이터 참고후 답변')
+    question = state['question']
+
     return {'question': '', 'generation': ''}
 
 
