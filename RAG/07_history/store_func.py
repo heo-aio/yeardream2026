@@ -8,7 +8,7 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 data_dir = 'data'
 
-embed_fn = OllamaEmbeddings(base_url='http://localhost:11434', model='nomic-embed-text:latest')
+embed_fn = OllamaEmbeddings(model='nomic-embed-text:latest')
 client = chromadb.PersistentClient(path='store')
 coll = Chroma(client=client,collection_name='rag_data', embedding_function=embed_fn)
 

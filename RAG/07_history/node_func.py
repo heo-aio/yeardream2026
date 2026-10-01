@@ -108,20 +108,18 @@ def excel_answer(state:State):
     당신은 데이터를 바탕으로 질문에 답하는 데이터 분석가 입니다.
     사용자가 입력한 질문을 제공된 데이터를 바탕으로 질문에 답하세요
     """
-
     msg_list = [
         ('system',sys_prompt),
-        ('human','질문:{question}\n데이터:{context}')
+        ('human',f'질문:{question}\n데이터:{data}')
     ]
-
-    chain = ChatPromptTemplate.from_messages(msg_list)|llm|StrOutputParser()
-    answer = chain.invoke({'question':question,'context':data})
-    state['generation'] = answer
     ### context ###
     context = state.get('context',[])
-    context.append(HumanMessage(content=question))
-    context.append(AIMessage(content=answer))
-    state['context'] = context
+    if len(context) > 0 :
+        msg_list.extend(context)
+    print(msg_list)
+    chain = ChatPromptTemplate.from_messages(msg_list)|llm|StrOutputParser()
+    answer = chain.invoke({})
+    state['generation'] = answer
 
     return state
 
