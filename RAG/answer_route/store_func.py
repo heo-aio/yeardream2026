@@ -31,4 +31,4 @@ def insert_data():
     coll.add_documents(docs)
     print(f'{len(coll.get()['ids'])} 개 문서 저장!')
 
-insert_data()
+# insert_data()

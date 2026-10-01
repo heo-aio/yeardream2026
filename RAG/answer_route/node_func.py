@@ -1,9 +1,12 @@
 from typing import TypedDict, List, Any
 
-from langchain_core.output_parsers import JsonOutputParser
+from langchain_core.output_parsers import JsonOutputParser, StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_ollama import ChatOllama
 from langgraph.graph import StateGraph
+
+from store_func import coll
+from utils import retrieve_to_text
 
 
 # State 객체
@@ -68,7 +71,19 @@ def vector_db(state:State):
     print('RAG 에서 데이터 참고후 답변')
     question = state['question']
 
-    return {'question': '', 'generation': ''}
+    ret = coll.as_retriever(search_kwargs={"k":5}) # 컬렉션 검색 객체
+    ret_chain = ret|retrieve_to_text
+    data = ret_chain.invoke(question)
+    print(f'참고자료 : {data}')
+    msg_list = []
+    msg_list.append(("system","사용자의 질문을 제공하는 정보를 바탕으로 대답하세요"))
+    msg_list.append(("human", "질문:{question}\n정보:{context}"))
+    prompt = ChatPromptTemplate.from_messages(msg_list)
+
+    chain = prompt|llm|StrOutputParser()
+    answer = chain.invoke({'context':data,'question':question})
+
+    return {'question': question, 'generation': answer, 'data':data}
 
 
 
