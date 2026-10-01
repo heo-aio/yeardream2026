@@ -48,7 +48,8 @@ def init_answer(state:State):
 def router(state:State):
     print('init_answer 내용을 통해 분기')
     # plain, excel, vector
-    return 'plain'
+    print(state['generation'])
+    return state['generation']
 
 def plain_answer(state:State):
     print('학습한 내용 안에서 답변')
