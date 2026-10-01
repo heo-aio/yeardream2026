@@ -2,7 +2,6 @@ from typing import TypedDict, List, Any
 
 from langchain_core.output_parsers import JsonOutputParser, StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
-from langchain_core.runnables import RunnablePassthrough
 from langchain_ollama import ChatOllama
 from langgraph.graph import StateGraph
 
