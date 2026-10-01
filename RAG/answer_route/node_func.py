@@ -34,7 +34,7 @@ def init_answer(state:State):
     주워진 질문에 맞춰 'excel', 'vector', 'plain' 중 하나만 선택할것
     다른 텍스트나 설명은 생성하지 말것
     json 형태로 'route' 라는 키에 대한 답으로 작성할것
-    예) {{'route':'plain'}}
+    예) {{"route":"plain"}}
     """
     msg_list = []
     msg_list.append(('system',sys_prompt))
@@ -43,7 +43,7 @@ def init_answer(state:State):
     chain = route_prompt|route_llm|JsonOutputParser()
     result = chain.invoke({'question':question})
     print(f'route result : {result}') #  {'route': 'vector'}
-    return {'question':question, 'generation':result['router']}
+    return {'question':question, 'generation':result['route']}
 
 def router(state:State):
     print('init_answer 내용을 통해 분기')
