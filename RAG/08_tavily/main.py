@@ -7,9 +7,12 @@ tavily search API - AI 에이젼트 및 LLM 을 위해 최적화된 AI 전용 �
 """
 import os
 
+from dotenv import load_dotenv
 from langchain_tavily import TavilySearch
 
-os.environ["TAVILY_API_KEY"] = ""
+load_dotenv() # .env 불러오기
+
+os.environ["TAVILY_API_KEY"] = os.getenv("TAVILY_API_KEY")
 
 def basic_search(query:str):
     ### search_depth
