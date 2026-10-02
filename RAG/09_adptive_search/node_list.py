@@ -26,6 +26,7 @@ def init_answer(state:State):
 
 def router(state:State):
     print('router 에게 내용 점검')
+    print(state['data'])
     sys_prompt = """
     당신은 [참고 데이터]와 [질문]을 분석하여 올바른 답변 경로(Route)를 판단하는 라우팅 전문가 입니다.
     
@@ -49,7 +50,7 @@ def router(state:State):
     chain = route_prompt|route_llm|JsonOutputParser()
     result = chain.invoke({'context':state['data'], 'question':state['question']})
     print(result)
-    return "rag"
+    return result['route']
 
 def plain(state:State):
     return state
