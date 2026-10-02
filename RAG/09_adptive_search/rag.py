@@ -39,6 +39,33 @@ def insert_data():
         print(f'{file} 저장 완료 ({len(docs)})개')
 # insert_data()
 
+def rag_search(query:str):
+    # similarity : 유사도순
+    # mmr : 유사도와 다양성
+    docs=store.search(query,search_type="similarity", k=5)
+    text = ''
+    for doc in docs:
+        text+= doc.page_content
+    return text
+
+# print(rag_search('fast api 의 정의'))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
