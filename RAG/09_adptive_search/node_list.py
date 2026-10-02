@@ -1,14 +1,22 @@
+import os
 from typing import TypedDict
 
+from dotenv import load_dotenv
 from langchain_core.output_parsers import JsonOutputParser, StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_ollama import ChatOllama
+from langchain_tavily import TavilySearch
 from langgraph.graph import StateGraph
 
 from rag import rag_search
 
 route_llm = ChatOllama(model="gemma4:e4b",format='json')
 llm = ChatOllama(model="gemma4:e4b",num_ctx=8192)
+
+# .env 불러와 api키 환경변수에 등록
+load_dotenv()
+os.environ["TAVILY_API_KEY"] = os.getenv("TAVILY_API_KEY")
+
 
 class State(TypedDict):
     question:str    # 질문 내용
@@ -58,6 +66,13 @@ def plain(state:State):
     return state
 
 def web_search(state:State):
+    print('웹검색 시작')
+    search = TavilySearch(max_results=5,search_depth='basic',topic='general')
+    results = search.invoke({'query':state['question']})
+    text = ''
+    for result in results['results']:
+        text += f"{result['title']}\n{result['content']}\n\n"
+    state['data'] = text
     return state
 
 def last_answer(state:State):
