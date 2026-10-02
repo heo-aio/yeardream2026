@@ -14,6 +14,10 @@ os.environ["TAVILY_API_KEY"] = ""
 def basic_search(query:str):
     search = TavilySearch(max_results=3, search_depth='basic', topic='general')
     result = search.invoke({'query':query})
-    print(result['results'])
+    # print(result['results'])
+    for r in result['results']:
+        print(f'TITLE : {r['title']}')
+        print(f'URL : {r['url']}')
+        print(f'SUMMARY : {r['content'][:150]}...')
 
 basic_search('2026년 langchain 최신버전 주요 변경사항')
