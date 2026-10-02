@@ -12,6 +12,13 @@ from langchain_tavily import TavilySearch
 os.environ["TAVILY_API_KEY"] = ""
 
 def basic_search(query:str):
+    ### search_depth
+    # basic     : 빠르고 저렴한 검색(1credit), 결과마다 간단한 content 제공
+    # advance   : basic * 2 배 검색, 문맥적 의미까지 분석해 깊게 탐색(예: 광고 문구 제거)
+    ### topic
+    # general(기본)   : 일반 웹 검색. 뉴스, 일반지식, 블로그, 위키디피아 등 웹 전반의 통합검색
+    # news      : 최신 뉴스/기사 전용 검색
+    # finance   : 금융/경제/주식 전용 검색
     search = TavilySearch(max_results=3, search_depth='basic', topic='general')
     result = search.invoke({'query':query})
     # print(result['results'])
