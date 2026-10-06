@@ -5,6 +5,8 @@ from dotenv import load_dotenv
 from langchain_core.output_parsers import StrOutputParser, JsonOutputParser
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_ollama import ChatOllama
+from langchain_tavily import TavilySearch
+from langgraph.channels import topic
 from langgraph.graph import StateGraph
 
 from rag import rag_search
@@ -68,6 +70,13 @@ def plain(state:State):
 
 def web(state:State):
     print('web 검색을 통해 데이터 전달')
+    question = state['question']
+    search = TavilySearch(max_results=5, search_depth='basic', topic='general')
+    result = search.invoke({'query':question})
+    text = ''
+    for result in result['results']:
+        text += f"{result['title']}\n{result['content'][:600]}\n\n"
+    state['data'] = text
     return state
 
 def last_answer(state:State):
