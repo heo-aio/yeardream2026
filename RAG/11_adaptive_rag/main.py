@@ -35,9 +35,11 @@ wf.add_edge('last_answer',END)
 # compile 및 실행
 app = wf.compile()
 query=input('질문 내용을 입력 하세요!')
-result = app.invoke({'question':query})
-print(f'최종결과 : {result}')
+#result = app.invoke({'question':query})
+#print(f'최종결과 : {result}')
 
+for chunk in app.stream({'question':query}, stream_mode="messages"):
+    print(chunk[0].content,end="",flush=True)
 
 
 
