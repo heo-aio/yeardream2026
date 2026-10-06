@@ -2,10 +2,12 @@ import os
 from typing import TypedDict
 
 from dotenv import load_dotenv
-from langchain_core.output_parsers import StrOutputParser
+from langchain_core.output_parsers import StrOutputParser, JsonOutputParser
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_ollama import ChatOllama
 from langgraph.graph import StateGraph
+
+from rag import rag_search
 
 # 1. API 키 환경변수 등록
 load_dotenv()
@@ -27,11 +29,37 @@ def get_state():
 
 def init_answer(state:State):
     print('최초 질문에 대한 응답(RAG)')
+    question = state['question']
+    context = rag_search(question)
+    state['data'] = context
     return state
 
 def router(state:State):
     print('어느 노드로 갈지 분기')
-    return "plain"
+    sys_prompt="""
+    당신은 [참고데이터]와 [질문]을 분석하여 올바른 답변 경로(Route)를 판단하는 라우팅 전문가 입니다.
+    
+    [분류기준]
+    - "rag" : [참고데이터]안에 [질문]을 답할 수 있는 정보가 충분히 포함되어 있는 경우
+    - "plain" : [참고데이터]에는 없지만 일반상식, 일반 개념 설명, 번역, 코딩 등 모델의 기본지식으로 답변 가능한 경우
+    - "web" : 최신 뉴스, 실시간정보, 날씨, 최근사건/이벤트 등 웹 검색이 반드시 필요한 경우
+    
+    [출력규칙]
+    - 다른 설명,인사말,마크다운(```) 등은 일체 출력하지 마세요.
+    - 반드시 아래 JSON 포맷만으로 정직하게 출력하세요.
+    
+    [출력 형식 예시]
+    {{"route":"rag"}}
+    """
+    human_prompt="[참고데이터]\n{context}\n\n[질문]\n{question}"
+
+    msg_list = [("system",sys_prompt),("human",human_prompt)]
+    prompt = ChatPromptTemplate.from_messages(msg_list)
+    chain = prompt|route_llm|JsonOutputParser()
+    # {"route":"rag"}
+    result = chain.invoke({'question':state['question'], 'context':state['data']})
+    print(f'result : {result}')
+    return result['route']
 
 def plain(state:State):
     print('참고자료를 지우고 전달')
