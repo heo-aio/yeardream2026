@@ -44,7 +44,7 @@ def chat_engine(question):
         print(chunk,end='',flush=True)
 
 while True:
-    question = input("운수 좋은날에 대한 질문을 해 주세요(exit 는 종료)\n")
+    question = input("\n운수 좋은날에 대한 질문을 해 주세요(exit 는 종료)\n")
     if question == 'exit':
         break
     else:
