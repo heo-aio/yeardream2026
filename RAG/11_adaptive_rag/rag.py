@@ -31,12 +31,13 @@ def insert_data():
 # insert_data()
 # print(coll.get())
 
-
-
-
-
-
-
-
-
 # 5. 검색기 버전으로 결롸값 불러오기
+def rag_search(query:str):
+    ret = index.as_retriever(simiarity_top_ke=5)
+    nodes = ret.retrieve(query)
+    resp = ''
+    for node_with_score in nodes:
+        resp += f"{node_with_score.node.get_content()}"
+    return resp
+
+# print(rag_search("next.js 와 react 를 비교해줘"))
