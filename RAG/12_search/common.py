@@ -6,7 +6,6 @@ from langchain_ollama import ChatOllama, OllamaEmbeddings
 
 from sample_data import SAMPLE_DOCS, RAG_TECH_DOCS
 
-
 def sample_documents():
     documents = []
     for doc in SAMPLE_DOCS:
@@ -43,7 +42,7 @@ def get_hf_embeddings(model_name:str):
 
 
 def get_llm(temperature:float=0.2) -> ChatOllama:
-    return ChatOllama(model="gemma4:latest", temperature=temperature)
+    return ChatOllama(model="gemma4:e4b", temperature=temperature)
 
 
 def rank_of(target_id: str, docs):
