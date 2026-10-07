@@ -81,6 +81,7 @@ def build_bm25(chunks, k: int = 5):
 
 
 # ── 융합(RRF) ─────────────────────────────────────────────
+# k : RRF 에서 순위간 점수격차가 커지는것을 막는 상수값(기본 60)
 def rrf_fuse(result_list, k: int = 60, top_n: int = 5):
     scores = {}  # 각 문서별 최종 RRF 점수를 저장할 딕셔너리 {문서 내용: RRF 점수}
     docmap = {} # 문서 내용을 Key로, 실제 문서(Document 객체)를 Value로 저장하는 맵
@@ -90,8 +91,10 @@ def rrf_fuse(result_list, k: int = 60, top_n: int = 5):
             key = doc.page_content
             docmap[key] = doc
             # [핵심] RRF 점수 계산 공식: 1 / (k + rank)
-            # 기존 점수에 현재 순위 기반 점수를 누적합(+=)
-            scores[key] = scores.get(key, 0) + 1 / (k + i + 1)
+            # 기존 점수에 현재 순위 기반 점수를 누적합(+=) -> A 에도 있고, B 에도 있으면 더 중요
+            # A 에서 5점, B 에서 4점 -> 9점
+            # A 에서 4점, B 에서 0점 -> 4점
+            scores[key] = scores.get(key, 0) + (1 / (k + i + 1))
 
     # 내림차순 정렬하여 점수가 가장 '높은' 문서가 상위에 오게 함
     # ("doc01", 0.032) -> key=lambda x: x[1] -> key = 0.032

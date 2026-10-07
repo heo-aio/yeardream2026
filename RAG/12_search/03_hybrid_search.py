@@ -1,5 +1,5 @@
 # BM25(키워드) 와 벡터(의미) 를 동시에 돌려 결과를 합쳐 약점 상호 보완하는 방식
-from common import rag_tech_documents, build_vector_retriever, topics, build_bm25
+from common import rag_tech_documents, build_vector_retriever, topics, build_bm25, rrf_fuse, rank_of
 
 # 1. 데이터 불러오기
 docs = rag_tech_documents()
@@ -9,15 +9,20 @@ EMB_KO = "intfloat/multilingual-e5-small"
 
 # 2. vector 방식 불러오기
 vec = build_vector_retriever(docs,EMB_KO,"vec")
-r_vec = vec.invoke(query)
-print(f'1. 벡터의 결과값 : {topics(r_vec)}')
+# r_vec = vec.invoke(query)
+# print(f'1. 벡터의 결과값 : {topics(r_vec)}')
 
 # 3. BM25 방식
 bm25 = build_bm25(docs)
-r_bm25=bm25.invoke(query)
-print(f'2. BM25의 결과값 : {topics(r_bm25)}')
+# r_bm25=bm25.invoke(query)
+# print(f'2. BM25의 결과값 : {topics(r_bm25)}')
 
+# 4. 하이브리드 검색모델 사용
+# RRF : 벡터와 BM25 의 점수 체계가 달라서 순위를 사용하는 모델을 활용
+# fused = rrf_fuse([r_vec,r_bm25],top_n=5)
+# print(f'3. 하이브리드 : {topics(fused)}')
 
+# 각 시나리오는 한쪽 검색의 약점이 드러나도록 만들어진 내용
 SCENARIOS = [
     {
         "query": "키워드 검색의 한국어 처리",
@@ -30,3 +35,21 @@ SCENARIOS = [
         "expect": "Vector 우위 — 정답 doc04의 단어가 질의와 거의 안 겹쳐 BM25는 놓침"
     },
 ]
+
+for s in SCENARIOS:
+    q = s['query']
+    tgt = s['target']
+    v_rank = rank_of(tgt,vec.invoke(q))
+    bm_rank = rank_of(tgt,bm25.invoke(q))
+    print(f'질문 : {q}')
+    print(f'정답 : {tgt} |  예상 : {s['expect']}')
+    print(f'VECTOR : {v_rank}')
+    print(f'BM25 : {bm_rank}')
+    print()
+
+
+
+
+
+
+
