@@ -82,10 +82,8 @@ def build_bm25(chunks, k: int = 5):
 
 # ── 융합(RRF) ─────────────────────────────────────────────
 def rrf_fuse(result_list, k: int = 60, top_n: int = 5):
-    # 각 문서별 최종 RRF 점수를 저장할 딕셔너리 {문서 내용: RRF 점수}
-    scores = {}
-    # 문서 내용을 Key로, 실제 문서(Document 객체)를 Value로 저장하는 맵
-    docmap = {}
+    scores = {}  # 각 문서별 최종 RRF 점수를 저장할 딕셔너리 {문서 내용: RRF 점수}
+    docmap = {} # 문서 내용을 Key로, 실제 문서(Document 객체)를 Value로 저장하는 맵
 
     for docs in result_list:
         for i, doc in enumerate(docs):
