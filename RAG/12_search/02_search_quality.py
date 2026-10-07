@@ -7,3 +7,9 @@ questions = [
     "환각을 줄이려면 프롬프트를 어떻게 써야 하나?",
     "벡터 데이터베이스에는 어떤 종류가 있나?",
 ]
+
+EMB_KO = "intfloat/multilingual-e5-small" # ~470MB, 다국어(한국어양호)
+EMB_EN = "sentence-transformers/all-MiniLM-L6-v2" # ~90MB, 영어위주(한국어약함)
+
+# index 함수 - 특정 임베딩 모델을 이용해 데이터를 청킹/저장
+
