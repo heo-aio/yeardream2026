@@ -10,9 +10,9 @@ EMB_KO = "intfloat/multilingual-e5-small"
 # 질문, 정답
 q = "한번 더 거르기"
 target = "doc04"
-# vec = build_vector_retriever(docs,EMB_KO,k=10,name="qt_nb")
-# v_result = vec.invoke(q)
-# v_rank = rank_of(target,v_result)
+vec = build_vector_retriever(docs,EMB_KO,k=10,name="qt_nb")
+v_result = vec.invoke(q)
+v_rank = rank_of(target,v_result)
 # print(f'질문 : {q} / 정답 : {target} / 순위 : {v_rank}')
 
 # Multi-Query
@@ -20,9 +20,14 @@ target = "doc04"
 # 확장된 질문으로 각각 검색후 RRF 로 검색결과를 합쳐서 순위 산정
 variants = multi_query(llm,q,3)
 print('확장된 질문')
+result_list = []
 for v in variants:
     print(f'질문 : {v}')
+    result_list.append(vec.invoke(v))
 
+fused = rrf_fuse(result_list,top_n=5)
+mq_rank = rank_of(target,fused)
+print(f"VEC 순위:{v_rank} -> MQ 순위:{mq_rank} (topic : {topics(fused)})")
 
 
 
