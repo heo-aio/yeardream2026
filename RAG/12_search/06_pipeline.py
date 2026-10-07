@@ -35,13 +35,13 @@ def pipeline(query:str) -> dict:
     # 4. LLM 활용
     answer = llm.invoke([
         SystemMessage(content="제공된 [문맥]에 근거해 한국어로 [질문] 에 대한 답변을 간결하게 해줘."),
-        HumanMessage(content="[문맥]\n{context}\n\n[질문]\n{query}")
+        HumanMessage(content=f"[문맥]\n{context}\n\n[질문]\n{query}")
     ]).content
     print(answer)
 
     return {"question":query,"context":context,"generation":answer}
 
-pipeline(QUERY)
+print(pipeline(QUERY))
 
 
 
