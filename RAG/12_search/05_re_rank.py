@@ -1,7 +1,7 @@
 # 2단계 검색 구조(retriever -> re rank)
 # 1. 검색결과를 폭넓게 가져와 추려낸다.
 # 2. 그 안에서 (질문,답변) 연관관계를 추론해 다시 정렬한다.
-from common import rag_tech_documents, build_vector_retriever, rank_of
+from common import rag_tech_documents, build_vector_retriever, rank_of, rerank
 
 # 데이터 호출
 docs = rag_tech_documents()
@@ -25,3 +25,7 @@ for sc in SCENARIOS:
     step1 = vec.invoke(q)
     step1_rank = rank_of(tgt,step1)
     print(f'1차 검색 순위:{step1_rank} {[f"{d.metadata['id']}/{d.metadata['topic']}" for d in step1]}')
+
+    step2 = rerank(q,step1,6,RERANK)
+    step2_rank = rank_of(tgt,step2)
+    print(f'2차 Re-Rank:{step2_rank} {[f"{d.metadata['id']}/{d.metadata['topic']}" for d in step2]}')
