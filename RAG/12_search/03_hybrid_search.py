@@ -1,5 +1,5 @@
 # BM25(키워드) 와 벡터(의미) 를 동시에 돌려 결과를 합쳐 약점 상호 보완하는 방식
-from common import rag_tech_documents, build_vector_retriever, topics
+from common import rag_tech_documents, build_vector_retriever, topics, build_bm25
 
 # 1. 데이터 불러오기
 docs = rag_tech_documents()
@@ -7,10 +7,16 @@ print(f'{len(docs)} 개 문서 불러오기')
 query = "두 검색 방식을 합쳐 약점을 보완하는 방법"
 EMB_KO = "intfloat/multilingual-e5-small"
 
-# vector 방식 불러오기
+# 2. vector 방식 불러오기
 vec = build_vector_retriever(docs,EMB_KO,"vec")
-results = vec.invoke(query)
-print(f'1. 벡터의 결과값 : {topics(results)}')
+r_vec = vec.invoke(query)
+print(f'1. 벡터의 결과값 : {topics(r_vec)}')
+
+# 3. BM25 방식
+bm25 = build_bm25(docs)
+r_bm25=bm25.invoke(query)
+print(f'2. BM25의 결과값 : {topics(r_bm25)}')
+
 
 SCENARIOS = [
     {
