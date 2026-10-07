@@ -112,8 +112,8 @@ def rrf_fuse(result_list, k: int = 60, top_n: int = 5):
 def multi_query(llm, q: str, n: int = 3):
     """LLM 으로 질문을 서로 다른 표현의 검색 질의 n개로 늘린다(원 질문 포함)."""
     text = llm.invoke(
-        f"다음 질문을 검색이 잘 되도록 서로 다른 표현의 검색 질의 {n}개로 바꿔줘. "
-        f"각 줄에 하나씩, 번호·기호 없이.\n질문: {q}"
+        f"""다음 질문을 검색이 잘 되도록 서로 다른 표현의 검색 질의 {n}개로 바꿔줘.
+        각 줄에 하나씩, 번호·기호 없이.\n질문: {q}"""
     ).content
 
     qs = []
