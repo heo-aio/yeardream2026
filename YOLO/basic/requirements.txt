@@ -1,6 +1,13 @@
-#YOLO
-torch==2.11.0
-torchvision==0.26.0
+# GTX1660 기준
+# YOLO
+--extra-index-url https://download.pytorch.org/whl/cu130/
+torch==2.11.0+cu130
+torchvision==0.26.0+cu130
+ultralytics
+
+# image show
 ultralytics
 #image show
 matplotlib
+# drawing
+opencv-python
