@@ -1,0 +1,2 @@
+class_names = ["T-shirt", "Trouser", "Pullover", "Dress", "Coat",
+               "Sandal", "Shirt", "Sneaker", "Bag", "Ankle-boot"]
