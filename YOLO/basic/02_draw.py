@@ -43,5 +43,16 @@ for box in boxes:
     )
     ax.add_patch(rect)
 
+    # 정확도 넣기
+    cls_name = results[0].names[cls_id]
+    label_text = f"{cls_name}({conf:.2f})"
+    ax.text(
+        x1,y1-10,label_text,
+        color='white',
+        fontsize=12,
+        weight='bold',
+        backgroundcolor=colors[cls_id]
+    )
+
 plt.axis('off') # 눈금자 숨기기
-plt.show()
+plt.show() # YOLO 는 기본 색상을 RGB 가 아닌 BGR 로 인식한다.
