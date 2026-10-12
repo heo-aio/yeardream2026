@@ -8,3 +8,4 @@
 **/.env
 **/runs
 **/fashion_mnist/
+**/dataset/
