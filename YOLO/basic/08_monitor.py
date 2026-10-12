@@ -7,7 +7,7 @@ import cv2
 from ultralytics import YOLO
 
 # 1. 카메라 연결
-cap = cv2.VideoCapture(0) # 'data/sample.mp4'
+cap = cv2.VideoCapture('data/sample.mp4') # 'data/sample.mp4'
 # 2. 모델 준비
 model = YOLO('yolo26n.pt')
 
@@ -19,8 +19,9 @@ dir = "C:/capture"
 if not os.path.exists(dir):
     print(f'{dir} 폴더가 없어서 생성')
     os.makedirs(dir)
-
+i = 0
 while True:
+    i += 1
     success,frame = cap.read() # 카메라에서 프레임을 읽어오기(성공여부,이미지프레임)
 
     if not success: # 못 읽어올 경우 나간다.
@@ -36,21 +37,22 @@ while True:
     )
     # 4. 탐지시 출력
     if len(results[0].boxes.xyxy.tolist()) >0:
-        # print('사람 탐지')
-        # 캡쳐
-        now = datetime.datetime.now()
-        ftime = now.strftime("%Y_%m_%d_%H%M%S")
+        print('사람 탐지')
+        if i%60 == 0:
+            # 캡쳐
+            now = datetime.datetime.now()
+            ftime = now.strftime("%Y_%m_%d_%H%M%S")
 
-        file_name = f"{dir}/{ftime}.jpg"
-        cv2.imwrite(file_name,frame)
-        print(f"{ftime}.jpg 가 저장됨")
+            file_name = f"{dir}/{ftime}.jpg"
+            cv2.imwrite(file_name,frame)
+            print(f"{ftime}.jpg 가 저장됨")
 
     # openCV 에 프레임 그리기
     plot_frame = results[0].plot()
     resize_frame = cv2.resize(plot_frame,(480,640))
     cv2.imshow("monitoring...",resize_frame)
 
-    if cv2.waitKey(1000) & 0xFF == ord("q"):   # 1/1000초 마다 q가 눌렸는지 확인
+    if cv2.waitKey(1) & 0xFF == ord("q"):   # 1/1000초 마다 q가 눌렸는지 확인
         break
 
 
