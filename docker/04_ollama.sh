@@ -20,3 +20,10 @@ nvidia-smi
 docker run -d --gpus=all -v C:\ollama:/root/.ollama -p 11434:11434 --name ollama ollama/ollama
 #  실행중인 컨테이너 리스트
 docker ps
+
+# docker 내부 터미널로 들어간다
+# docker exec -it [container] /bin/bash
+docker exec -it ollama /bin/bash
+
+# ollama run gemma4:e4b
+# ollama run bge-m3 <- embed 모드 이기 때문에 에러가 나타남(대화가 안되므로)
