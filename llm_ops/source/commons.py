@@ -2,7 +2,7 @@ import os
 
 import opik
 from dotenv import load_dotenv
-from llama_index.core import Settings
+from llama_index.core import Settings, SimpleDirectoryReader, VectorStoreIndex
 from llama_index.embeddings.ollama import OllamaEmbedding
 from llama_index.llms.ollama import Ollama
 from opik.integrations.llama_index import LlamaIndexCallbackHandler
@@ -49,9 +49,13 @@ def use_llama_index():
     Settings.embed_model = OllamaEmbedding(model_name=EMBED_MODEL, base_url= OLLAMA_URL)
 
 
-
-
-
+def build_query_engine(k:int):
+    # text 문서 읽기
+    documents = SimpleDirectoryReader('data').load_data()
+    # 검색용 인덱스 만들기
+    index = VectorStoreIndex.from_documents(documents)
+    # 쿼리엔진으로 답변
+    return index.as_query_engine(similarity_top_k=k)
 
 
 
