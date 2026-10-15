@@ -26,7 +26,10 @@ questions = [
 ]
 
 for q in questions:
+    # 질문과 결과를 tracer 에게 전달
     result = chain.invoke({'question':q},config={'callbacks':[tracer]})
     print(f'Q : {q} \nA: {result.content}\n')
 
 # 4. 모든 기록 서버에 전송
+tracer.flush()
+print(f'전송 완료 Opik > Projects > {PROJECT_NAME} 에서 Traces 를 확인하세요')
