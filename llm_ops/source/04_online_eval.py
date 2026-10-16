@@ -36,6 +36,7 @@ def answer_with_scoring(question:str):
 
 
 if __name__ == '__main__':
+    # q = input('학사와 관련된 질문을 해 주세요')
     questions = [
         "수강 신청은 어디서 하나요?",
         "평점 4.2면 몇 학점까지 신청이 되나요?",
