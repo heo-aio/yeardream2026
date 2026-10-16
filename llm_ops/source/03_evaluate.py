@@ -2,10 +2,13 @@ from opik import Opik, evaluate
 from opik.evaluation.metrics import Hallucination, AnswerRelevance
 from opik.evaluation.models import LiteLLMChatModel
 
-from commons import use_llama_index, build_query_engine, JUDGE_MODEL, OLLAMA_URL, LLM_MODEL
+from commons import *
 
-client = Opik()
-dataset = client.get_or_create_dataset(name="haksa-qa")
+use_llama_index()
+query_engine = build_query_engine(2)
+
+client = Opik(project_name=PROJECT_NAME)
+dataset = client.get_or_create_dataset(name="haksa-qa-V2", project_name=PROJECT_NAME)
 dataset.insert([
     {"input": "수강 신청은 어디서 하나요?", "expected_output": "학사서비스 > 수강신청 메뉴"},
     {"input": "수강 정정 기간은 언제인가요?", "expected_output": "개강 후 첫째 주 월~금"},
@@ -14,9 +17,6 @@ dataset.insert([
 ])
 
 # task - 특정 내용을 받아서 질문, 답, 참고문서를 반환
-use_llama_index()
-query_engine = build_query_engine(2)
-
 def task(item):
     print(f"item={item}")
     res = query_engine.query(item['input'])
