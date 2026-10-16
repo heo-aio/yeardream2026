@@ -1,4 +1,4 @@
-import opik
+from opik.evaluation.metrics import Moderation
 
 from commons import *
 
@@ -39,9 +39,32 @@ samples = [
     },
 ]
 
+m_metric = Moderation(model=judge_model)
 @opik.track(name="moderation_check", project_name=PROJECT_NAME, tags=['online','judge','moderation'])
-def answer_with_scoring(question:str):
-    return {"answer":None,"context":None}
+def answer_with_scoring(question:str, answer:str):
+    # moderation 은 output 만 체크해 준다.(인자값이 1개만 받기 떄문에)
+    input_res = m_metric.score(output=question)
+    out_res = m_metric.score(output=answer)
+    # trace 에 추가
+
+    return {"input_score":input_res,"output_score":out_res}
 
 if __name__ == '__main__':
-    pass
+    for s in samples:
+        print(f"[{s['title']}]")
+        print(f"Q : {s['input']}")
+        print(f"A : {s['output']}")
+        res = answer_with_scoring(s['input'],s['output'])
+        print(f'질문 유해성 : {res['input_score'].value:.2f}')
+        print(f'답변 유해성 : {res['output_score'].value:.2f}')
+
+    opik.flush_tracker()
+    print(f'유해성 체크 완료!')
+
+
+
+
+
+
+
+
