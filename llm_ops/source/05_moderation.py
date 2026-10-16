@@ -1,3 +1,4 @@
+from opik import opik_context
 from opik.evaluation.metrics import Moderation
 
 from commons import *
@@ -46,6 +47,12 @@ def answer_with_scoring(question:str, answer:str):
     input_res = m_metric.score(output=question)
     out_res = m_metric.score(output=answer)
     # trace 에 추가
+    opik_context.update_current_trace(
+        feedback_scores=[
+            {"name":"mod_input","value":input_res.value,"reason":input_res.reason},
+            {"name": "mod_output", "value": out_res.value, "reason": out_res.reason},
+        ]
+    )
 
     return {"input_score":input_res,"output_score":out_res}
 
