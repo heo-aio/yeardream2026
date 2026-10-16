@@ -55,24 +55,9 @@ if __name__ == '__main__':
         print(f"Q : {sample['input']}")
         print(f"A : {sample['output']}")
         res = check(sample['input'],sample['output'])
-        print(f"compliance risk : {res['score'].value:.2f}")
-        print(f"reason : {res['reason']}")
+        print(res)
+        print(f"compliance risk : {res['response'].value:.2f}")
+        print(f"reason : {res['response'].reason}")
         print()
     opik.flush_tracker()
     print(f'채점 완료!!')
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
