@@ -1,7 +1,8 @@
-from opik import Opik
+from opik import Opik, evaluate
+from opik.evaluation.metrics import Hallucination, AnswerRelevance
 from opik.evaluation.models import LiteLLMChatModel
 
-from commons import use_llama_index, build_query_engine, JUDGE_MODEL, OLLAMA_URL
+from commons import use_llama_index, build_query_engine, JUDGE_MODEL, OLLAMA_URL, LLM_MODEL
 
 client = Opik()
 dataset = client.get_or_create_dataset(name="haksa-qa")
@@ -37,7 +38,19 @@ if __name__ == "__main__":
         timeout=600,
         num_ctx=8192
     )
-    # 평가실행
+    # 평가실행 + flush() 내장되어 있어 사용하지 않아도 됨
+    evaluate(
+        dataset=dataset,    # 사전테스트 시험지와 답
+        task=task,          # 질문,답,출처 반환 처리
+        scoring_metrics=[   # 평가지표
+            Hallucination(model=judge),    # 환각(0~1) 낮을수록 좋음
+            AnswerRelevance(model=judge)   # 대답의 연관성(0~1) 높을수록 좋음
+        ],
+        experiment_name='rag-v1',
+        experiment_config={'llm':LLM_MODEL,'judge':JUDGE_MODEL},
+        task_threads=1
+    )
+    print('평가 완료 Opik -> Datasets -> haksa-qa -> Experiments 에서 확인하세요')
 
 
 
