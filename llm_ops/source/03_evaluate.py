@@ -1,4 +1,7 @@
 from opik import Opik
+from opik.evaluation.models import LiteLLMChatModel
+
+from commons import use_llama_index, build_query_engine, JUDGE_MODEL, OLLAMA_URL
 
 client = Opik()
 dataset = client.get_or_create_dataset(name="haksa-qa")
@@ -8,3 +11,36 @@ dataset.insert([
     {"input": "최대 신청 학점은?", "expected_output": "18학점, 평점 4.0 이상이면 21학점"},
     {"input": "기숙사 신청은 어떻게 하나요?", "expected_output": "문서에 없는 내용"},
 ])
+
+# task - 특정 내용을 받아서 질문, 답, 참고문서를 반환
+use_llama_index()
+query_engine = build_query_engine(2)
+
+def task(item):
+    print(f"item={item}")
+    res = query_engine.query(item['input'])
+    print(f'response={res}')
+    answer = str(res)
+    context = [node.get_content() for node in res.source_nodes]
+    # for node in res.source_nodes:
+    # context.append(node.get_content())
+
+    return {"input":item['input'], "output":answer, "context":context}
+
+# 평가 - JUDGE LLM 을 활용한 평가
+# 원래 쳥가모델은 7B 이상을 권장
+if __name__ == "__main__":
+    # 심판 LLM 정의
+    judge = LiteLLMChatModel(
+        model_name=JUDGE_MODEL,
+        api_base=OLLAMA_URL,
+        timeout=600,
+        num_ctx=8192
+    )
+    # 평가실행
+
+
+
+
+
+
