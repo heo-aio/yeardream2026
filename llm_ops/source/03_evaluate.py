@@ -51,9 +51,3 @@ if __name__ == "__main__":
         task_threads=1
     )
     print('평가 완료 Opik -> Datasets -> haksa-qa -> Experiments 에서 확인하세요')
-
-
-
-
-
-
